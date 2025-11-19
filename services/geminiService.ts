@@ -88,11 +88,14 @@ export const generateTranslation = async (
 ): Promise<string> => {
   if (!text.trim()) return "";
 
-  // Determine which API key to use: explicitly provided one or environment variable
+  // Priority Logic:
+  // 1. Use Environment Variable (Process.env) if available (Preferred default)
+  // 2. If not, use the Manual Key passed from UI (localStorage)
   const envKey = getEnvVar('API_KEY');
-  const activeKey = apiKey || envKey;
+  const activeKey = envKey || apiKey;
 
   if (!activeKey) {
+    // This error is mostly for logging, as UI should intercept this
     throw new Error("API Key is missing. Please configure it in Settings.");
   }
 

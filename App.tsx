@@ -37,11 +37,9 @@ const App: React.FC = () => {
     const storedKey = localStorage.getItem('gemini_api_key');
     if (storedKey) {
       setApiKey(storedKey);
-    } else if (!hasEnvKey()) {
-      // If no env key and no local key, prompt user
-      const timer = setTimeout(() => setIsSettingsOpen(true), 500);
-      return () => clearTimeout(timer);
-    }
+    } 
+    // We do not automatically open settings on mount anymore, 
+    // we wait for user user interaction (Interception logic)
   }, []);
 
   const handleSaveApiKey = (key: string) => {
@@ -55,6 +53,18 @@ const App: React.FC = () => {
 
   const handleGenerate = async () => {
     if (!state.input.trim()) return;
+
+    // --- API KEY INTERCEPTOR ---
+    // Logic: Default to Env Key. If not present, check Manual Key.
+    // If neither exists, stop and open settings.
+    const envKeyExists = hasEnvKey();
+    const manualKeyExists = !!apiKey;
+
+    if (!envKeyExists && !manualKeyExists) {
+      setIsSettingsOpen(true);
+      return;
+    }
+    // ---------------------------
     
     setState(prev => ({ ...prev, isLoading: true, error: null }));
     
@@ -75,7 +85,7 @@ const App: React.FC = () => {
         error: err.message || "Something went wrong"
       }));
       
-      // If error is related to missing key, open settings
+      // If error is related to missing key (double check), open settings
       if (err.message?.includes("API Key")) {
         setIsSettingsOpen(true);
       }
@@ -168,7 +178,7 @@ const App: React.FC = () => {
               onClick={() => setIsSettingsOpen(true)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all shadow-sm border ${
                 !apiKey && !hasEnvKey() 
-                  ? 'bg-red-50 border-red-200 text-red-600 animate-pulse' 
+                  ? 'bg-red-50 border-red-200 text-red-600' 
                   : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
               }`}
             >
