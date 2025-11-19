@@ -26,7 +26,9 @@ export const TRANSLATIONS = {
       glossaryPlaceholder: "Brand, Model, ID (comma separated)...",
       glossaryTip: "These terms will remain untranslated.",
       keywordTitle: "Inject Keywords / Slang",
-      placeholder: "Enter text..."
+      placeholder: "Enter text...",
+      addTagPlaceholder: "Add custom tag...",
+      add: "Add"
     },
     output: {
       title: "Result (Vietnamese)",
@@ -53,6 +55,12 @@ export const TRANSLATIONS = {
       getKey: "Get a key here.",
       cancel: "Cancel",
       save: "Save Settings"
+    },
+    placeholders: {
+      SEO_TITLE: "e.g. Xiaomi Air Purifier 4 Lite Smart Home Remove Formaldehyde Odor Sterilization Bedroom [Enter Brand + Model + Features]",
+      PRODUCT_DETAIL: "e.g. \n1. Material: 100% Premium Cotton\n2. Function: Quick-dry, breathable\n3. Scene: Gym, Running, Daily wear\n(AI will convert this to emoji bullets)",
+      CUSTOMER_SERVICE: "e.g. Dear, this item is ready stock. If you order today, we will ship it tomorrow morning. Feel free to ask any questions!",
+      MARKETING: "e.g. 50% OFF for 3 days only! Buy 1 Get 1 Free! Best price of the year. Don't miss out!"
     }
   },
   zh: {
@@ -79,7 +87,9 @@ export const TRANSLATIONS = {
       glossaryPlaceholder: "品牌名, 型号, ID (逗号分隔)...",
       glossaryTip: "输入的内容将保持原文，不进行翻译。",
       keywordTitle: "植入热搜词 / 黑话",
-      placeholder: "请输入中文文案..."
+      placeholder: "请输入中文文案...",
+      addTagPlaceholder: "自定义热词...",
+      add: "添加"
     },
     output: {
       title: "翻译结果 (越南语)",
@@ -106,6 +116,12 @@ export const TRANSLATIONS = {
       getKey: "点击获取 Key",
       cancel: "取消",
       save: "保存设置"
+    },
+    placeholders: {
+      SEO_TITLE: "示例：小米空气净化器 4 Lite 智能家用 除甲醛 异味 杀菌 卧室静音 \n(建议结构：品牌 + 型号 + 核心卖点 + 适用场景)",
+      PRODUCT_DETAIL: "示例：\n1. 面料：100%纯棉，吸汗透气\n2. 版型：韩版宽松，显瘦遮肉\n3. 适用：上班、约会、逛街\n(AI 会自动转化为越南语 Emoji 卖点清单 + 尺码建议)",
+      CUSTOMER_SERVICE: "示例：亲，这款是现货哦，今天下单明天就能发货。如果有质量问题支持7天无理由退换，请放心购买！\n(AI 会自动添加越南语敬语 Dạ/Vâng 并软化语气)",
+      MARKETING: "示例：全场五折起！买一送一！仅限前100名，手慢无！快点击下方链接抢购！\n(AI 会自动植入 Sale sập sàn, Giá hủy diệt 等当地黑话)"
     }
   }
 };

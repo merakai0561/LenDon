@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Package, ExternalLink, Zap, Cpu, Settings, Globe } from 'lucide-react';
-import { Scenario, TranslationState, ModelType } from './types';
+import { Scenario, TranslationState, ModelType, KEYWORD_PRESETS } from './types';
 import { generateTranslation } from './services/geminiService';
 import { ModeSelector } from './components/ModeSelector';
 import { InputPanel } from './components/InputPanel';
@@ -9,12 +8,18 @@ import { OutputPanel } from './components/OutputPanel';
 import { SettingsModal } from './components/SettingsModal';
 import { Language, TRANSLATIONS } from './locales';
 
+// Safe env check helper
+const hasEnvKey = () => {
+  return typeof process !== 'undefined' && process.env && !!process.env.API_KEY;
+};
+
 const App: React.FC = () => {
   const [state, setState] = useState<TranslationState>({
     input: '',
     output: '',
     glossary: '',
     keywords: [],
+    customTags: [], // Initialize empty custom tags
     scenario: Scenario.SEO_TITLE,
     model: 'gemini-3-pro-preview',
     isLoading: false,
@@ -32,7 +37,7 @@ const App: React.FC = () => {
     const storedKey = localStorage.getItem('gemini_api_key');
     if (storedKey) {
       setApiKey(storedKey);
-    } else if (!process.env.API_KEY) {
+    } else if (!hasEnvKey()) {
       // If no env key and no local key, prompt user
       const timer = setTimeout(() => setIsSettingsOpen(true), 500);
       return () => clearTimeout(timer);
@@ -87,6 +92,29 @@ const App: React.FC = () => {
     });
   };
 
+  const handleAddCustomTag = (tag: string) => {
+    const trimmedTag = tag.trim();
+    if (!trimmedTag) return;
+    
+    // Prevent duplicates in custom tags or existing presets
+    const alreadyExists = state.customTags.includes(trimmedTag) || KEYWORD_PRESETS.some(p => p.term === trimmedTag);
+    
+    if (alreadyExists) {
+      // If it exists but isn't selected, just select it
+      if (!state.keywords.includes(trimmedTag)) {
+        toggleKeyword(trimmedTag);
+      }
+      return;
+    }
+
+    // Add to custom tags AND auto-select it
+    setState(prev => ({
+      ...prev,
+      customTags: [...prev.customTags, trimmedTag],
+      keywords: [...prev.keywords, trimmedTag]
+    }));
+  };
+
   const toggleLanguage = () => {
     setLang(prev => prev === 'en' ? 'zh' : 'en');
   };
@@ -139,13 +167,13 @@ const App: React.FC = () => {
             <button 
               onClick={() => setIsSettingsOpen(true)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all shadow-sm border ${
-                !apiKey && !process.env.API_KEY 
+                !apiKey && !hasEnvKey() 
                   ? 'bg-red-50 border-red-200 text-red-600 animate-pulse' 
                   : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
               }`}
             >
               <Settings size={12} />
-              {!apiKey && !process.env.API_KEY ? t.header.setKey : t.header.settings}
+              {!apiKey && !hasEnvKey() ? t.header.setKey : t.header.settings}
             </button>
 
             <button className="hidden sm:flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-3 py-1.5 rounded-full text-xs transition-all shadow-sm">
@@ -176,10 +204,13 @@ const App: React.FC = () => {
                 text={state.input}
                 glossary={state.glossary}
                 keywords={state.keywords}
+                customTags={state.customTags}
                 onChangeText={(val) => setState(prev => ({ ...prev, input: val }))}
                 onChangeGlossary={(val) => setState(prev => ({ ...prev, glossary: val }))}
                 onToggleKeyword={toggleKeyword}
+                onAddCustomTag={handleAddCustomTag}
                 lang={lang}
+                scenario={state.scenario}
               />
               
               <div className="mt-6 pt-5 border-t border-slate-100">

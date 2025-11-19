@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { X, Key, Save, ShieldCheck } from 'lucide-react';
 import { Language, TRANSLATIONS } from '../locales';
@@ -19,7 +18,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   lang
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const hasEnvKey = !!process.env.API_KEY;
+  
+  // Safe check for env key
+  const hasEnvKey = typeof process !== 'undefined' && process.env && !!process.env.API_KEY;
+  
   const t = TRANSLATIONS[lang].settings;
 
   useEffect(() => {

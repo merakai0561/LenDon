@@ -70,6 +70,14 @@ const SYSTEM_INSTRUCTIONS: Record<Scenario, string> = {
   5. PRESERVE terms listed in GLOSSARY.`
 };
 
+// Safe environment variable accessor
+const getEnvVar = (key: string): string | undefined => {
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[key];
+  }
+  return undefined;
+};
+
 export const generateTranslation = async (
   text: string,
   scenario: Scenario,
@@ -81,7 +89,8 @@ export const generateTranslation = async (
   if (!text.trim()) return "";
 
   // Determine which API key to use: explicitly provided one or environment variable
-  const activeKey = apiKey || process.env.API_KEY;
+  const envKey = getEnvVar('API_KEY');
+  const activeKey = apiKey || envKey;
 
   if (!activeKey) {
     throw new Error("API Key is missing. Please configure it in Settings.");

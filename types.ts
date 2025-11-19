@@ -13,6 +13,7 @@ export interface TranslationState {
   output: string;
   glossary: string;
   keywords: string[];
+  customTags: string[]; // New field for user-defined tags
   scenario: Scenario;
   model: ModelType;
   isLoading: boolean;
